@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { signOut, useSession } from 'next-auth/react';
 
 type TechnologyCardProps = {
   name: string;
@@ -8,6 +9,9 @@ type TechnologyCardProps = {
 };
 
 const Home: NextPage = () => {
+  const session = useSession();
+  console.log({ session });
+
   return (
     <>
       <Head>
@@ -21,7 +25,7 @@ const Home: NextPage = () => {
           Create <span className="text-purple-300">T3</span> App
         </h1>
         <p className="text-2xl text-gray-700">This stack uses:</p>
-        <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
+        <div className="grid gap-3 py-3 my-3 text-center md:grid-cols-3 lg:w-2/3">
           <TechnologyCard
             name="NextJS"
             description="The React framework for production"
@@ -38,6 +42,21 @@ const Home: NextPage = () => {
             documentation="https://tailwindcss.com/"
           />
         </div>
+        {session.status !== 'authenticated' ? (
+          <a
+            href="/api/auth/signin"
+            className="bg-purple-300 text-white p-2 rounded-full my-3 duration-500 motion-safe:hover:scale-105"
+          >
+            Sign In with NextAuth
+          </a>
+        ) : (
+          <button
+            onClick={() => signOut()}
+            className="bg-gray-300 text-white p-2 rounded-full my-3 duration-500 motion-safe:hover:scale-105"
+          >
+            Sign Out
+          </button>
+        )}
       </main>
     </>
   );
